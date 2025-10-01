@@ -1,39 +1,24 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import Spinner from "../components/Spinner";
-import { useParams } from "react-router-dom";
+import { useParams, useLoaderData } from "react-router-dom";
 
 const JobPage = () => {
   const { id } = useParams();
-  const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchJob = async () => {
-      try {
-        const res = await fetch(`/api/jobs/${id}`);
-        const data = await res.json();
-        setJob(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchJob();
-  }, []);
-
-  console.log(`/api/job/${id}`);
-  console.log(job);
+  const job = useLoaderData();
   return (
     <>
-      {loading ? (
-        <Spinner loading={loading} />
-      ) : (
-        <div className="text-2xl text-indigo-500">{job.title} </div>
-      )}
+      {
+        <div className="text-2xl text-indigo-500 text-center mt-4 bg-indigo-200">
+          {job.title}
+        </div>
+      }
     </>
   );
 };
 
-export default JobPage;
+const jobLoader = async ({ params }) => {
+  const res = await fetch(`/api/jobs/${params.id}`);
+
+  const data = await res.json();
+  return data;
+};
+
+export { JobPage as default, jobLoader };
