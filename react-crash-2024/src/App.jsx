@@ -28,7 +28,13 @@ const App = () => {
   };
 
   const deleteJob = async (id) => {
-    console.log(id);
+    const res = await fetch(`/api/jobs/${id}`, {
+      method: "DELETE",
+    });
+
+    const data = await res.json();
+    console.log(data);
+    return;
   };
 
   const router = createBrowserRouter(
@@ -36,11 +42,12 @@ const App = () => {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
         <Route path="/jobs" element={<JobsPage />} />
-        <Route path="/jobs/:id" element={<JobPage />} loader={jobLoader} />
         <Route
-          path="/add-job"
-          element={<AddJobPage addJobSubmit={addJob} deleteJob={deleteJob} />}
+          path="/jobs/:id"
+          element={<JobPage deleteJob={deleteJob} />}
+          loader={jobLoader}
         />
+        <Route path="/add-job" element={<AddJobPage addJobSubmit={addJob} />} />
         <Route
           path="/jobs/edit/:id"
           element={<AddJobPage />}
